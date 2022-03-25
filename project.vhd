@@ -319,7 +319,7 @@ clk_divide : process (clk_in) is
                 when 1 =>
         
      
-                led <= "0000011001100000";
+                led <= "00000000000000";
   
                  when 2 =>
         
