@@ -51,15 +51,20 @@ architecture Behavioral of project is
 
 --constant max_count : integer := 6250000;  --From practical 9. lets user pick clockspeed.
 constant max_count : integer := 5;  
+constant sseg : integer := 1;
+--constant sseg : integer := 1250000;
 
 signal clk : std_logic;
+signal sev_clk: std_logic;
 
 begin
 
 clk_divide : process (clk_in) is
   
-  variable count : unsigned(22 downto 0):= to_unsigned(0,23);   -- required to count up to 6,250,000!
-  variable clk_int : std_logic := '0';                          -- this is a clock internal to the process
+  variable count : unsigned(22 downto 0):= to_unsigned(0,23);
+  variable seg_count : unsigned(22 downto 0):= to_unsigned(0,23);                                                          -- required to count up to 6,250,000!
+  variable clk_int : std_logic := '0';  
+  variable clk_sev : std_logic := '0';                        -- this is a clock internal to the process
   
   begin
     
@@ -75,6 +80,20 @@ clk_divide : process (clk_in) is
       clk <= clk_int;                 -- assign clock variable to internal clock signal
       
     end if;
+    
+    if rising_edge(clk_in) then
+      
+      if seg_count < sseg-1 then     -- highest value count should reach is 6,249,999.
+        seg_count := seg_count + 1;           -- increment counter
+      else
+        seg_count := to_unsigned(0,23);   -- reset count to zero
+        clk_sev := not clk_sev;       -- invert clock variable every time counter resets
+      end if;
+      
+      sev_clk <= clk_sev;                 -- assign clock variable to internal clock signal
+      
+    end if;
+    
     
   end process;
   
@@ -324,7 +343,7 @@ clk_divide : process (clk_in) is
    end process;
    
    
-   sevenseg : process (clk_in) is
+   sevenseg : process (sev_clk) is
    
     variable count : unsigned(3 downto 0) := "0000";
   
@@ -332,7 +351,7 @@ clk_divide : process (clk_in) is
      
     begin
      
-     if rising_edge(clk_in) then
+     if rising_edge(sev_clk) then
      
         count := count + 1;
         
@@ -375,6 +394,42 @@ clk_divide : process (clk_in) is
                     anode<="1101";
                     seven<="1001111";
                 when 3=> 
+                    anode<="1110";
+                    seven<="1001111";
+                 when 4=> 
+                    anode<="0111";
+                    seven<="0010010";
+                 when 5=> 
+                    anode<="1011";
+                    seven<="0000100";
+                when 6=> 
+                    anode<="1101";
+                    seven<="1001111";
+                when 7=> 
+                    anode<="1110";
+                    seven<="1001111";
+                 when 8=> 
+                    anode<="0111";
+                    seven<="0010010";
+                 when 9=> 
+                    anode<="1011";
+                    seven<="0000100";
+                when 10=> 
+                    anode<="1101";
+                    seven<="1001111";
+                when 11=> 
+                    anode<="1110";
+                    seven<="1001111";
+                 when 12=> 
+                    anode<="0111";
+                    seven<="0010010";
+                 when 13=> 
+                    anode<="1011";
+                    seven<="0000100";
+                when 14=> 
+                    anode<="1101";
+                    seven<="1001111";
+                when 15=> 
                     anode<="1110";
                     seven<="1001111";
                 when others=>
@@ -454,10 +509,49 @@ clk_divide : process (clk_in) is
                 when 3=> 
                     anode<="1110";
                     seven<="0000110";
-                when others=>
+                 when 4=> 
+                    anode<="0111";
+                    seven<="0000001";
+                when 5=> 
+                    anode<="1011";
+                    seven<="0000110";
+                 when 6=> 
+                   anode<="1101";
+                   seven<="0000001";
+                when 7=> 
+                    anode<="1110";
+                    seven<="0000110";
+                when 8=> 
+                    anode<="0111";
+                    seven<="0000001";
+                when 9=> 
+                    anode<="1011";
+                    seven<="0000110";
+                 when 10=> 
+                   anode<="1101";
+                   seven<="0000001";
+                when 11=> 
+                    anode<="1110";
+                    seven<="0000110";
+                 when 12=> 
+                    anode<="0111";
+                    seven<="0000001";
+                when 13=> 
+                    anode<="1011";
+                    seven<="0000110";
+                 when 14=> 
+                   anode<="1101";
+                   seven<="0000001";
+                when 15=> 
+                    anode<="1110";
+                    seven<="0000110";
+               when others => 
                     anode<="1111";
                     seven<="1111111";
-                end case;
+               end case;
+                    
+               
+                
                 
        when others =>
        
