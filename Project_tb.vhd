@@ -48,10 +48,11 @@ component project is
            bday3 : in STD_LOGIC;
            led : out STD_LOGIC_VECTOR (15 downto 0);
            anode : out STD_LOGIC_VECTOR (3 downto 0);
-           seven : out STD_LOGIC_VECTOR (6 downto 0));
+           seven : out STD_LOGIC_VECTOR (6 downto 0);
+           db : out STD_LOGIC );
 end component;
 
-signal clk_in, reset, enable, bday1, bday2, bday3 : std_logic;
+signal clk_in, reset, enable, bday1, bday2, bday3, db : std_logic;
 signal led : std_logic_vector(15 downto 0);
 signal anode : STD_LOGIC_VECTOR (3 downto 0);
 signal seven : STD_LOGIC_VECTOR (6 downto 0);
@@ -77,22 +78,23 @@ begin
       bday3 => bday3,
       led   => led,
       anode => anode,
-      seven => seven);
+      seven => seven,
+      db => db);
       
     stimulus : process is
 
 begin
 
 
-        reset <= '1'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '0'; wait for 8*sim_clk;
+        --reset <= '1'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '0'; wait for 8*sim_clk;
          
-        reset <= '0'; enable <= '1'; bday1 <= '1'; bday2 <= '0'; bday3 <= '0'; wait for 8*sim_clk;
+        reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '1'; bday3 <= '0'; wait for 2*sim_clk;
 
-        reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '1'; bday3 <= '0'; wait for 8*sim_clk;
+       -- reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '1'; bday3 <= '0'; wait for 8*sim_clk;
 
-        reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '0'; wait for 8*sim_clk;
+        --reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '0'; wait for 8*sim_clk;
         
-        reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '1'; wait for 16*sim_clk;
+       -- reset <= '0'; enable <= '1'; bday1 <= '0'; bday2 <= '0'; bday3 <= '1'; wait for 16*sim_clk;
 
 
 end process;
