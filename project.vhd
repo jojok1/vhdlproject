@@ -52,7 +52,7 @@ architecture Behavioral of project is
 --constant max_count : integer := 6250000;  --From practical 9. lets user pick clockspeed.
 constant max_count : integer := 5;  
 constant sseg : integer := 1;
---constant sseg : integer := 1250000;
+--constant sseg : integer := 390625;
 
 signal clk : std_logic;
 signal sev_clk: std_logic;
