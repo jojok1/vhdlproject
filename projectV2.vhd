@@ -112,6 +112,10 @@ clk_divide : process (clk_in) is
       elsif  (bday3 = '1') then
       
         button := "11";
+
+       else
+           
+        button := "00";
         
       end if;
        
