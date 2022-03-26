@@ -325,26 +325,6 @@ clk_divide : process (clk_in) is
                 end case;
             
            when 3 =>
-           
-           --0303
-           case to_integer(count) is 
-                when 0=> 
-                    anode<="0111";
-                    seven<="0000001";
-                when 1=> 
-                    anode<="1011";
-                    seven<="0000110";
-                 when 2=> 
-                   anode<="1101";
-                   seven<="0000001";
-                when 3=> 
-                    anode<="1110";
-                    seven<="0000110";
-                when others=>
-                    anode<="1111";
-                    seven<="1111111";
-                end case;
-
                     
                   case to_integer(count) is 
     
