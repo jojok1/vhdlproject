@@ -439,7 +439,7 @@ clk_divide : process (clk_in) is
       
       when 2 =>
       
-        case to_integer(count) is 
+           case to_integer(count) is 
                 when 0=> 
                     anode<="0111";
                     seven<="0010010";
@@ -457,10 +457,10 @@ clk_divide : process (clk_in) is
                     seven<="0010010";
                  when 5=> 
                     anode<="1011";
-                    seven<="0000100";
+                    seven<="0000001";
                 when 6=> 
                     anode<="1101";
-                    seven<="1001111";
+                    seven<="0000001";
                 when 7=> 
                     anode<="1110";
                     seven<="1001111";
@@ -469,10 +469,10 @@ clk_divide : process (clk_in) is
                     seven<="0010010";
                  when 9=> 
                     anode<="1011";
-                    seven<="0000100";
+                    seven<="0000001";
                 when 10=> 
                     anode<="1101";
-                    seven<="1001111";
+                    seven<="0000001";
                 when 11=> 
                     anode<="1110";
                     seven<="1001111";
@@ -481,10 +481,10 @@ clk_divide : process (clk_in) is
                     seven<="0010010";
                  when 13=> 
                     anode<="1011";
-                    seven<="0000100";
+                    seven<="0000001";
                 when 14=> 
                     anode<="1101";
-                    seven<="1001111";
+                    seven<="0000001";
                 when 15=> 
                     anode<="1110";
                     seven<="1001111";
