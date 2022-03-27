@@ -62,35 +62,35 @@ begin
 clk_divide : process (clk_in) is
   
   variable count : unsigned(22 downto 0):= to_unsigned(0,23);
-  variable seg_count : unsigned(22 downto 0):= to_unsigned(0,23);                                                          -- required to count up to 6,250,000!
+  variable seg_count : unsigned(22 downto 0):= to_unsigned(0,23);                                                          
   variable clk_int : std_logic := '0';  
-  variable clk_sev : std_logic := '0';                        -- this is a clock internal to the process
+  variable clk_sev : std_logic := '0';                        
   
   begin
     
     if rising_edge(clk_in) then
       
-      if count < max_count-1 then     -- highest value count should reach is 6,249,999.
-        count := count + 1;           -- increment counter
+      if count < max_count-1 then     
+        count := count + 1;           
       else
-        count := to_unsigned(0,23);   -- reset count to zero
-        clk_int := not clk_int;       -- invert clock variable every time counter resets
+        count := to_unsigned(0,23);  
+        clk_int := not clk_int;       
       end if;
       
-      clk <= clk_int;                 -- assign clock variable to internal clock signal
+      clk <= clk_int;                 
       
     end if;
     
     if rising_edge(clk_in) then
       
-      if seg_count < sseg-1 then     -- highest value count should reach is 6,249,999.
-        seg_count := seg_count + 1;           -- increment counter
+      if seg_count < sseg-1 then    
+        seg_count := seg_count + 1;          
       else
-        seg_count := to_unsigned(0,23);   -- reset count to zero
-        clk_sev := not clk_sev;       -- invert clock variable every time counter resets
+        seg_count := to_unsigned(0,23);  
+        clk_sev := not clk_sev;       
       end if;
       
-      sev_clk <= clk_sev;                 -- assign clock variable to internal clock signal
+      sev_clk <= clk_sev;                
       
     end if;
     
