@@ -1,49 +1,21 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 22.03.2022 20:18:04
--- Design Name: 
--- Module Name: project - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
 
-
+-- libraries
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_std.all;
 
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity project is
     Port ( clk_in : in STD_LOGIC;
            reset : in STD_LOGIC;
            enable : in STD_LOGIC;
            bday1 : in STD_LOGIC;
-           bday2 : in STD_LOGIC;
+           bday2 : in STD_LOGIC; --3bday inputs are neeeded
            bday3 : in STD_LOGIC;
            led : out STD_LOGIC_VECTOR (15 downto 0);
            anode : out STD_LOGIC_VECTOR (3 downto 0);
            seven : out STD_LOGIC_VECTOR (6 downto 0);
-           db : out STD_LOGIC);
+           db : out STD_LOGIC); --unussed - used for decimal point
          
 end project;
 
@@ -54,43 +26,44 @@ constant max_count : integer := 5;
 constant sseg : integer := 1;
 --constant sseg : integer := 390625;
 
-signal clk : std_logic;
+signal clk : std_logic; -- these signals replace the clock signals
 signal sev_clk: std_logic;
+--two signals are used as the sevseg display needs to run much higher speed than the LEDS.
 
 begin
 
 clk_divide : process (clk_in) is
   
   variable count : unsigned(22 downto 0):= to_unsigned(0,23);
-  variable seg_count : unsigned(22 downto 0):= to_unsigned(0,23);                                                          
+  variable seg_count : unsigned(22 downto 0):= to_unsigned(0,23);      -- required to count up to 6,250,000 for division
   variable clk_int : std_logic := '0';  
-  variable clk_sev : std_logic := '0';                        
+  variable clk_sev : std_logic := '0';                        -- this is a clock internal to the process. made global later
   
   begin
     
-    if rising_edge(clk_in) then
+    if rising_edge(clk_in) then -- LED division sequence (proactical 9)
       
       if count < max_count-1 then     
         count := count + 1;           
       else
-        count := to_unsigned(0,23);  
+        count := to_unsigned(0,23);   
         clk_int := not clk_int;       
       end if;
       
-      clk <= clk_int;                 
+      clk <= clk_int;                
       
     end if;
     
-    if rising_edge(clk_in) then
+    if rising_edge(clk_in) then --this sequence divides the clk_in but by a samller amounth
       
-      if seg_count < sseg-1 then    
-        seg_count := seg_count + 1;          
+      if seg_count < sseg-1 then     
+        seg_count := seg_count + 1;           
       else
-        seg_count := to_unsigned(0,23);  
-        clk_sev := not clk_sev;       
+        seg_count := to_unsigned(0,23);   
+        clk_sev := not clk_sev;     
       end if;
       
-      sev_clk <= clk_sev;                
+      sev_clk <= clk_sev;                 
       
     end if;
     
@@ -98,11 +71,11 @@ clk_divide : process (clk_in) is
   end process;
   
   
-  sequence_generator : process (clk) is
+  sequence_generator : process (clk) is -- MAIN LED SEQUENCE
 
   variable count : unsigned(3 downto 0) := "0000";
   
-  variable button : unsigned(1 downto 0) := "00";
+  variable button : unsigned(1 downto 0) := "00"; -- Only 4 combinations are needed for the buttons since we deal with  3 bdays.
   
   begin
   
@@ -110,7 +83,7 @@ clk_divide : process (clk_in) is
   
     if rising_edge(clk) then
         
-        if (reset = '1') then
+        if (reset = '1') then --reset and enable signals 
         
             count := "0000";
             
@@ -124,7 +97,7 @@ clk_divide : process (clk_in) is
        end if;
        
        
-      if (bday1 = '1') then
+      if (bday1 = '1') then --sets the correct case
            
           button := "01";
           
@@ -136,7 +109,7 @@ clk_divide : process (clk_in) is
       
         button := "11";
         
-      else 
+      else  -- if case for when the program starts with no buttons enabled 
       
        button := "00";
       
@@ -216,11 +189,11 @@ clk_divide : process (clk_in) is
    
                 when others =>
       
-                    led <= (others => '1');   
+                    led <= (others => '1');   --this section covers any unexpected values that may somehow arise
                 
                 end case;
                 
-         when 2 =>
+         when 2 => --Joe LED
                 
                 case to_integer(count) is 
     
@@ -271,12 +244,12 @@ clk_divide : process (clk_in) is
    
                 when others =>
            
-                --count := "0000";
+      
                 led <= (others => '0');
                 
                 end case;
             
-           when 3 =>
+           when 3 => --christos LED
                     
                   case to_integer(count) is 
     
@@ -327,7 +300,7 @@ clk_divide : process (clk_in) is
                  
                   when others =>
            
-                --count := "0000";
+               
                led <= (others => '0');
                    
                 end case;   
@@ -335,7 +308,7 @@ clk_divide : process (clk_in) is
                            
            when others =>
            
-                --count := "0000";
+                
                led <= (others => '0');
                            
            end case;
@@ -343,7 +316,7 @@ clk_divide : process (clk_in) is
    end process;
    
    
-   sevenseg : process (sev_clk) is
+   sevenseg : process (sev_clk) is -- to run the seven segment display
    
     variable count : unsigned(3 downto 0) := "0000";
   
@@ -351,7 +324,7 @@ clk_divide : process (clk_in) is
      
     begin
      
-     if rising_edge(sev_clk) then
+     if rising_edge(sev_clk) then -- no reset or enable. this constantly runs. 
      
         count := count + 1;
         
@@ -381,7 +354,7 @@ clk_divide : process (clk_in) is
         
      case to_integer(button) is
       
-      when 1 =>
+      when 1 => -- pavlos bday
       
         case to_integer(count) is 
                  when 0=> 
@@ -437,9 +410,9 @@ clk_divide : process (clk_in) is
                     seven<="1111111";
                 end case;
       
-      when 2 =>
+      when 2 => --joe bday
       
-           case to_integer(count) is 
+        case to_integer(count) is 
                 when 0=> 
                     anode<="0111";
                     seven<="0010010";
@@ -494,7 +467,7 @@ clk_divide : process (clk_in) is
      
                 end case;
                 
-       when 3 =>
+       when 3 => --christos bday
        
         case to_integer(count) is 
                 when 0=> 
